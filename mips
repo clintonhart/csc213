@@ -1,0 +1,69 @@
+.data
+oga_1:.asciiz "enter a number for a:"
+oga_2:.asciiz "enter a number for b:"
+oga_3:.asciiz "enter a number for c:"
+oga_4:.float 2.0
+oga_5:.float 4.0
+oga_6:.asciiz " complex root"
+oga_7:.asciiz "\nAnd\n"
+.text 
+main:
+    lwc1 $f1, oga_4    #$f1=2.0
+    lwc1 $f2, oga_5   #$f2 =4.0
+    li $v0,4
+    la $a0, oga_1
+    syscall
+    li $v0,6  #input= F0
+    syscall
+    mov.s $f3,$f0 # $f3=a
+    
+    li $v0,4
+    la $a0,oga_2
+    syscall
+    li $v0,6  #input=f0
+    syscall
+    mov.s $f4, $f0 #f4=b
+    
+    li $v0,4
+    la $a0,oga_3
+    syscall
+    li $v0,6  #input=f0
+    syscall 
+    mov.s $f5, $f0  #input=c
+    
+    mul.s $f7, $f4, $f4 #f7 =b^2
+    mul.s $f6, $f2, $f3
+    mul.s $f6,$f6,$f5  #f6=4ac
+    sub.s $f8,$f7,$f6 #b^2-4ac
+    mfc1 $t3,$f8 #$f8=$t3
+    blez $t3, complex
+    
+    neg.s $f9,$f4 #$f9=- b
+    sqrt.s $f10, $f8 #$10=sqrt of d
+    mul.s $f11,$f1,$f3 #multiplication of $f1 and $f2
+    add.s $f15,$f9, $f10
+    sub.s $f16, $f9, $f10
+    div.s $f17,$f15, $f11
+    div.s $f18,$f16, $f11
+    
+    mov.s $f12,$f17
+    li $v0,2
+    syscall
+    
+    la $a0,oga_7
+    li $v0,4
+    syscall
+    
+    mov.s $f12,$f18
+    li $v0,2
+    syscall
+b  exit
+    complex:
+    li $v0,4
+    la $a0 oga_6
+    syscall 
+    
+
+    exit:
+    li $v0,10
+    syscall
